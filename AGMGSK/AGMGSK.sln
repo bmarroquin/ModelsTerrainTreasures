@@ -1,7 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AGMGSK", "AGMGSK\AGMGSK.csproj", "{F1A7A258-E2AC-439B-832A-20901FE1EC93}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AGMGSK", "AGMGSK\AGMGSK\AGMGSK.csproj", "{A15294E5-507C-4AE9-97C1-0AD07E726666}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "AGMGSKContent", "AGMGSK\AGMGSKContent\AGMGSKContent.contentproj", "{B2751853-DEF6-4AA4-9EEF-E2956642E70D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +11,12 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F1A7A258-E2AC-439B-832A-20901FE1EC93}.Debug|x86.ActiveCfg = Debug|x86
-		{F1A7A258-E2AC-439B-832A-20901FE1EC93}.Debug|x86.Build.0 = Debug|x86
-		{F1A7A258-E2AC-439B-832A-20901FE1EC93}.Release|x86.ActiveCfg = Release|x86
-		{F1A7A258-E2AC-439B-832A-20901FE1EC93}.Release|x86.Build.0 = Release|x86
+		{A15294E5-507C-4AE9-97C1-0AD07E726666}.Debug|x86.ActiveCfg = Debug|x86
+		{A15294E5-507C-4AE9-97C1-0AD07E726666}.Debug|x86.Build.0 = Debug|x86
+		{A15294E5-507C-4AE9-97C1-0AD07E726666}.Release|x86.ActiveCfg = Release|x86
+		{A15294E5-507C-4AE9-97C1-0AD07E726666}.Release|x86.Build.0 = Release|x86
+		{B2751853-DEF6-4AA4-9EEF-E2956642E70D}.Debug|x86.ActiveCfg = Debug|x86
+		{B2751853-DEF6-4AA4-9EEF-E2956642E70D}.Release|x86.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
