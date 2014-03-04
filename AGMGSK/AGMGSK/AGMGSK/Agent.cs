@@ -33,81 +33,85 @@ using Microsoft.Xna.Framework.GamerServices;
 
 namespace AGMGSK {
 
-/// <summary>
-/// A model that moves.  
-/// Has three Cameras:  first, follow, above.
-/// Camera agentCamera references the currently used camera {first, follow, above}
-/// Follow camera shows the MovableMesh from behind and up.
-/// Above camera looks down on avatar.
-/// The agentCamera (active camera) is updated by the avatar's Update().
-/// 
-/// 1/25/2012 last changed
-/// </summary>
-public abstract class Agent : MovableModel3D {
-   protected Object3D agentObject = null;
-   protected Camera agentCamera, first, follow, above;
-   public enum CameraCase { FirstCamera, FollowCamera, AboveCamera }
+    /// <summary>
+    /// A model that moves.  
+    /// Has three Cameras:  first, follow, above.
+    /// Camera agentCamera references the currently used camera {first, follow, above}
+    /// Follow camera shows the MovableMesh from behind and up.
+    /// Above camera looks down on avatar.
+    /// The agentCamera (active camera) is updated by the avatar's Update().
+    /// 
+    /// 1/25/2012 last changed
+    /// </summary>
+    public abstract class Agent : MovableModel3D {
+        protected Object3D agentObject = null;
+        protected Camera agentCamera, first, follow, above;
+        public enum CameraCase { FirstCamera, FollowCamera, AboveCamera }
 
 
-   /// <summary>
-   /// Create an Agent.
-   /// All Agents are collidable and have a single instance Object3D named agentObject.
-   /// Set StepSize, create first, follow and above cameras.
-   /// Set first as agentCamera
-   /// <param name="stage"></param>
-   /// <param name="label"></param>
-   /// <param name="position"></param>
-   /// <param name="orientAxis"></param>
-   /// <param name="radians"></param>
-   /// <param name="meshFile"></param>
-   /// </summary>
-   public Agent(Stage stage, string label, Vector3 position, Vector3 orientAxis, 
-      float radians, string meshFile) 
-      : base(stage, label, meshFile)
-      {
-      // create an Object3D for this agent
-      agentObject = addObject(position, orientAxis, radians);
-      first =  new Camera(stage, agentObject, Camera.CameraEnum.FirstCamera); 
-      follow = new Camera(stage, agentObject, Camera.CameraEnum.FollowCamera);
-      above =  new Camera(stage, agentObject, Camera.CameraEnum.AboveCamera);
-      stage.addCamera(first);
-      stage.addCamera(follow);
-      stage.addCamera(above);
-      agentCamera = first;
-      }
- 
-   // Properties  
- 
-  public Object3D AgentObject {
-      get { return agentObject; }}
-   
-   public Camera AvatarCamera {
-      get { return agentCamera; }
-     set { agentCamera = value; }
-  }
+        /// <summary>
+        /// Create an Agent.
+        /// All Agents are collidable and have a single instance Object3D named agentObject.
+        /// Set StepSize, create first, follow and above cameras.
+        /// Set first as agentCamera
+        /// <param name="stage"></param>
+        /// <param name="label"></param>
+        /// <param name="position"></param>
+        /// <param name="orientAxis"></param>
+        /// <param name="radians"></param>
+        /// <param name="meshFile"></param>
+        /// </summary>
+        public Agent(Stage stage, string label, Vector3 position, Vector3 orientAxis,
+           float radians, string meshFile)
+            : base(stage, label, meshFile) {
+            // create an Object3D for this agent
+            agentObject = addObject(position, orientAxis, radians);
+            first = new Camera(stage, agentObject, Camera.CameraEnum.FirstCamera);
+            follow = new Camera(stage, agentObject, Camera.CameraEnum.FollowCamera);
+            above = new Camera(stage, agentObject, Camera.CameraEnum.AboveCamera);
+            stage.addCamera(first);
+            stage.addCamera(follow);
+            stage.addCamera(above);
+            agentCamera = first;
+        }
 
-   public Camera Follow {
-      get { return follow; }}
+        // Properties  
 
-   public Camera Above {
-      get { return above; }}
-            
-   // Methods
+        public Object3D AgentObject {
+            get { return agentObject; }
+        }
 
-   public override string ToString() {
-      return agentObject.Name;
-      }
-      
-   public void updateCamera() {
-      agentCamera.updateViewMatrix();
-      }
-      
-   public override void Update(GameTime gameTime) { 
-      agentObject.updateMovableObject();
-      base.Update(gameTime); 
-      // Agent is in correct (X,Z) position on the terrain 
-      // set height to be on terrain -- this is a crude "first approximation" solution.
-      stage.setSurfaceHeight(agentObject);
-      }
-              
-}}
+        public Camera AvatarCamera {
+            get { return agentCamera; }
+            set { agentCamera = value; }
+        }
+
+        public Camera Follow {
+            get { return follow; }
+        }
+
+        public Camera Above {
+            get { return above; }
+        }
+
+        // Methods
+
+        public override string ToString() {
+            return agentObject.Name;
+        }
+
+        public void updateCamera() {
+            agentCamera.updateViewMatrix();
+        }
+
+        public override void Update(GameTime gameTime) {
+            agentObject.updateMovableObject();
+            base.Update(gameTime);
+            // Agent is in correct (X,Z) position on the terrain 
+            // set height to be on terrain -- this is a crude "first approximation" solution.
+
+            stage.setSurfaceHeight(agentObject);
+        }
+
+    }
+}

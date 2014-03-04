@@ -51,6 +51,7 @@ namespace AGMGSK {
         private int turnCount = 0;
         private bool interrupt;
         NavNode currentGoal;
+        Object3D targetTreasure = null;
         /// <summary>
         /// Create a NPC. 
         /// AGXNASK distribution has npAgent move following a Path.
@@ -119,17 +120,40 @@ namespace AGMGSK {
             return (aPath);
         }
 
+        public void FindNearest(Treasure treasure) {
+            if (interrupt) return;
+            Object3D min = null;
+            foreach (Object3D t in treasure.Instance) {
+                if (treasure.taggedTreasures.Contains(t)) {
+                    continue;
+                }
+                if (min == null) {
+                    min = t;
+                }
+                else {
+                    float testDistance = Vector3.Distance(agentObject.Translation, t.Translation);
+                    float minDistance = Vector3.Distance(agentObject.Translation, min.Translation);
+                    if (testDistance < minDistance) {
+                        min = t;
+                    }
+                }
+            }
 
-        public void Interrupt(Vector3 pos){
-            if (interrupt == true) {
+            if (min == null) {
                 return;
             }
-            else {
+            Interrupt(min.Translation);
+            targetTreasure = min;
+        }
+
+
+        public void Interrupt(Vector3 pos){
+            
                 currentGoal = nextGoal;
                 nextGoal = new NavNode(pos, NavNode.NavNodeEnum.WAYPOINT);
                 agentObject.turnToFace(nextGoal.Translation);
                 interrupt = true;
-            }
+            
         }
 
 
@@ -156,6 +180,8 @@ namespace AGMGSK {
                     interrupt = false;
                     nextGoal = currentGoal;
                     agentObject.turnToFace(nextGoal.Translation);
+                    stage.treasure.Tag(targetTreasure);
+                    targetTreasure = null;
                 }
                 else {
                     nextGoal = path.NextNode;

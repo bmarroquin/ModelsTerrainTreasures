@@ -300,5 +300,9 @@ public class Object3D  {
       objectBoundingSphereWorld *= Matrix.CreateTranslation(objectBoundingSphereCenter);
       }
 
+   public String ToString() {
+       return name + " X= " + Translation.X + ", Y= " + Translation.Y + ", Z= " + Translation.Z;
+   }
+
    }
 }
