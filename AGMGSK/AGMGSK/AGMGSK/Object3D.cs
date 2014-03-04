@@ -283,6 +283,17 @@ public class Object3D  {
             Orientation *= Matrix.CreateTranslation(startLocation);  // restore position       
       }
 
+   public void rotateObject(float pitch, float yaw, float roll) {
+       Vector3 startLocation;
+       startLocation = Translation;  // set for current location
+       Orientation *= Matrix.CreateTranslation(-1 * Translation);  // move to origin
+       Orientation *= Matrix.CreateRotationY(yaw);
+       Orientation *= Matrix.CreateRotationX(pitch);
+       Orientation *= Matrix.CreateRotationZ(roll);
+       Orientation *= Matrix.CreateTranslation(startLocation);  
+   }
+
+
    public void updateBoundingSphere() {
       objectBoundingSphereCenter = Translation;  // set center to instance
       objectBoundingSphereWorld = Matrix.CreateScale(objectBoundingSphereRadius);

@@ -102,7 +102,11 @@ public class Stage : Game {
    // Screen display information variables
    protected double fpsSecond;
    protected int draws, updates;
-
+   private RasterizerState wireFrame = new RasterizerState() {
+       CullMode = CullMode.None,
+       FillMode = FillMode.WireFrame
+   };
+   private bool wireFrameMode = true;
    /// <summary>
    /// Set the Scene.
    /// The Scene contains all "application-specific" content that is to added to
@@ -135,6 +139,7 @@ public class Stage : Game {
       // information display variables
       fpsSecond = 0.0;
       draws = updates = 0;
+       
       }
 
    // Properties
@@ -403,6 +408,10 @@ public class Stage : Game {
                new Vector3(0, 1, 0), 0.0f,
                new Vector3(random.Next(3) + 1, random.Next(3) + 1, random.Next(3) + 1));
       // ----------- end of optional content
+
+      //Add TReasures
+      Treasure treasure = new Treasure(this, "treasure", "Coin");
+      Components.Add(treasure);
       // Set initial camera and projection matrix
       nextCamera();  // select the first camera
       }
@@ -496,9 +505,14 @@ public class Stage : Game {
       GraphicsDevice.BlendState = BlendState.Opaque;
       GraphicsDevice.DepthStencilState = DepthStencilState.Default;
       GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
-      // draw objects in stage 
+      
+       // draw objects in stage 
       display.Viewport = sceneViewport;
       display.RasterizerState = RasterizerState.CullNone;
+      if (wireFrameMode) {
+          GraphicsDevice.RasterizerState = wireFrame;
+          effect.TextureEnabled = false;
+      }
       base.Draw(gameTime);  // draw all GameComponents and DrawableGameComponents
       }
 
