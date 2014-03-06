@@ -215,7 +215,7 @@ namespace TerrainMap {
             int step = 3;
             int radius = 24;
             int[,] center = new int[3, 2];
-            center[0, 0] = 400;
+            center[0, 0] = 100;
             center[0, 1] = 400;
             center[1, 0] = 100;
             center[1, 1] = 100;
@@ -223,7 +223,6 @@ namespace TerrainMap {
             center[2, 1] = 100;
             int x, z;
             float height;
-            Vector3 colorVec3;
             int[,] hm = new int[512, 512];
             heightMap = new Color[textureWidth, textureHeight];
             // first create the "plain" heights
@@ -255,7 +254,9 @@ namespace TerrainMap {
                 else {
                     z -= step;
                 }
-                if (x >= 462 || x <50 || z >= 462 || z < 50) {
+
+
+                if (x >= 462 || x < 50 || z >= 462 || z < 50 || (x > 375 && z > 375)) {
                     next = random.Next(3);
                     x = center[next, 0];
                     z = center[next, 1];

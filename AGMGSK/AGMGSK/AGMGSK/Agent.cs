@@ -47,7 +47,7 @@ namespace AGMGSK {
         protected Object3D agentObject = null;
         protected Camera agentCamera, first, follow, above;
         public enum CameraCase { FirstCamera, FollowCamera, AboveCamera }
-
+        protected int treasureCount;
 
         /// <summary>
         /// Create an Agent.
@@ -92,6 +92,11 @@ namespace AGMGSK {
 
         public Camera Above {
             get { return above; }
+        }
+
+        public int TreasureCount {
+            get { return treasureCount; }
+            set { treasureCount = value; }
         }
 
         // Methods

@@ -52,6 +52,15 @@ namespace AGMGSK {
         private bool interrupt;
         NavNode currentGoal;
         Object3D targetTreasure = null;
+
+        private bool pathFindingMode = true;
+
+
+        public bool PathFindingMode {
+            get { return pathFindingMode; }
+        }
+
+
         /// <summary>
         /// Create a NPC. 
         /// AGXNASK distribution has npAgent move following a Path.
@@ -121,16 +130,24 @@ namespace AGMGSK {
         }
 
         public void FindNearest(Treasure treasure) {
-            if (interrupt) return;
+            // If the agent is already looking for the nearest treasure, do not look for more.
+            if (!pathFindingMode) {
+                return;
+            }
+
+            // Find the closests treasure to the agent.
             Object3D min = null;
             foreach (Object3D t in treasure.Instance) {
+                // If the treasure was tagged already then ignore it
                 if (treasure.taggedTreasures.Contains(t)) {
                     continue;
                 }
+                // If the min is null make the min equal the current object.
                 if (min == null) {
                     min = t;
                 }
                 else {
+                    //Check if the distance of the current object is less than the min. 
                     float testDistance = Vector3.Distance(agentObject.Translation, t.Translation);
                     float minDistance = Vector3.Distance(agentObject.Translation, min.Translation);
                     if (testDistance < minDistance) {
@@ -138,23 +155,18 @@ namespace AGMGSK {
                     }
                 }
             }
-
+            // If the min is null then there is no treasures or all treasues have been tagged.
             if (min == null) {
+                Console.WriteLine("No treasures avaialble");
                 return;
             }
-            Interrupt(min.Translation);
+            // save the current target Treasure
             targetTreasure = min;
+            //Switch to treasure mode.
+            SwitchMode();
         }
 
 
-        public void Interrupt(Vector3 pos){
-            
-                currentGoal = nextGoal;
-                nextGoal = new NavNode(pos, NavNode.NavNodeEnum.WAYPOINT);
-                agentObject.turnToFace(nextGoal.Translation);
-                interrupt = true;
-            
-        }
 
 
         /// <summary>
@@ -164,26 +176,21 @@ namespace AGMGSK {
         /// </summary>
         public override void Update(GameTime gameTime) {
             stage.setInfo(15,
-               string.Format("npAvatar:  Location ({0:f0},{1:f0},{2:f0})  Looking at ({3:f2},{4:f2},{5:f2})",
+               string.Format("npAvatar:  Location ({0:f0},{1:f0},{2:f0})  Looking at ({3:f2},{4:f2},{5:f2}) Treasure Count = {6:d}",
                   agentObject.Translation.X, agentObject.Translation.Y, agentObject.Translation.Z,
-                  agentObject.Forward.X, agentObject.Forward.Y, agentObject.Forward.Z));
+                  agentObject.Forward.X, agentObject.Forward.Y, agentObject.Forward.Z, treasureCount));
             stage.setInfo(16,
                string.Format("nextGoal:  ({0:f0},{1:f0},{2:f0})", nextGoal.Translation.X, nextGoal.Translation.Y, nextGoal.Translation.Z));
-            // See if at or close to nextGoal, distance measured in the flat XZ plane
-            float distance = Vector3.Distance(
-               new Vector3(nextGoal.Translation.X, 0, nextGoal.Translation.Z),
-               new Vector3(agentObject.Translation.X, 0, agentObject.Translation.Z));
-            if (distance <= snapDistance) {
-                stage.setInfo(17, string.Format("distance to goal = {0,5:f2}", distance));
-                // snap to nextGoal and orient toward the new nextGoal 
-                if (interrupt) {
-                    interrupt = false;
-                    nextGoal = currentGoal;
-                    agentObject.turnToFace(nextGoal.Translation);
-                    stage.treasure.Tag(targetTreasure);
-                    targetTreasure = null;
-                }
-                else {
+
+            if (pathFindingMode) {
+                // See if at or close to nextGoal, distance measured in the flat XZ plane
+                float distance = Vector3.Distance(
+                   new Vector3(nextGoal.Translation.X, 0, nextGoal.Translation.Z),
+                   new Vector3(agentObject.Translation.X, 0, agentObject.Translation.Z));
+                if (distance <= snapDistance) {
+                    stage.setInfo(17, string.Format("distance to goal = {0,5:f2}", distance));
+                    // snap to nextGoal and orient toward the new nextGoal 
+
                     nextGoal = path.NextNode;
                     agentObject.turnToFace(nextGoal.Translation);
                     if (path.Done)
@@ -192,13 +199,30 @@ namespace AGMGSK {
                         turnCount++;
                         stage.setInfo(18, string.Format("turnToFace count = {0}", turnCount));
                     }
+
+                }
+            }
+            else {//Treasure mode
+                if (stage.treasure.taggedTreasures.Contains(targetTreasure)) {
+                    SwitchMode();
                 }
             }
             base.Update(gameTime);  // Agent's Update();
         }
 
+        public void SwitchMode() {
+            if (pathFindingMode) {
+                agentObject.turnToFace(targetTreasure.Translation);
+            }
+            else {
+                agentObject.turnToFace(nextGoal.Translation);
+                targetTreasure = null;
+            }
+            pathFindingMode = !pathFindingMode;
+        }
+
         public override String ToString() {
-            
+
             return "X: " + agentObject.Translation.X + " Y: " + agentObject.Translation.Y + " Z: " + agentObject.Translation.Z;
         }
     }

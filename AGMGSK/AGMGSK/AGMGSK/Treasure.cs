@@ -8,11 +8,14 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace AGMGSK {
     public class Treasure:Model3D {
+        
         public List<Object3D> taggedTreasures;
         private float radians = .01f;
+        private int tagRadius = 2000;
+
         public Treasure(Stage stage, String label, String meshFile):base(stage, label, meshFile) {
             taggedTreasures = new List<Object3D>();
-            this.isCollidable = true;
+            this.isCollidable = false;
             int spacing = stage.Terrain.Spacing;
             Terrain terrain = stage.Terrain;
             addObject(new Vector3(256*spacing, terrain.surfaceHeight(256,256)+200,256*spacing), Vector3.Up, 0,new Vector3(150,150,150));
@@ -25,7 +28,6 @@ namespace AGMGSK {
             foreach (Object3D obj in instance) {
                 obj.rotateObject(0, radians, 0);
             }
-            
             base.Update(gameTime);
         }
 
@@ -87,7 +89,37 @@ namespace AGMGSK {
                 }
             }
         }
-      
+
+
+        public void CheckForCollision(Agent agent) {
+            // Loop through each object looking for a collision
+            foreach(Object3D obj in instance){
+
+                // If the object already exists in the tagged treassures list then skip it.
+                if (taggedTreasures.Contains(obj)) {
+                    continue;
+                }
+
+                // Caluclating the distance of the object and the agent.
+                float dist = Vector3.Distance(agent.AgentObject.Translation, obj.Translation);
+                
+                if (dist < tagRadius) {
+                    //If there is a collision tag the object
+                    Tag(obj);
+
+                    // If the agent is the NPAgent and it is in find treasure mode
+                    // switch it back to regular mode. 
+                    if (agent.GetType() == typeof(NPAgent)) {
+                        NPAgent np= (NPAgent)agent;
+                        if (!np.PathFindingMode) {
+                            np.SwitchMode();
+                        }
+                    }
+                    agent.TreasureCount++;
+                }
+            }
+
+        }
 
 
     

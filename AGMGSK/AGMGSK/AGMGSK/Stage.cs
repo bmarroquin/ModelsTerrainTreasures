@@ -497,13 +497,13 @@ namespace AGMGSK {
                 draws = updates = 0;
                 fpsSecond = 0.0;
                 inspector.setInfo(11,
-                   string.Format("Player:   Location ({0,5:f0},{1,3:f0},{2,5:f0})  Looking at ({3,5:f2},{4,5:f2},{5,5:f2})",
+                   string.Format("Player:   Location ({0,5:f0},{1,3:f0},{2,5:f0})  Looking at ({3,5:f2},{4,5:f2},{5,5:f2}) Treasure Count = {6:d}",
                    player.AgentObject.Translation.X, player.AgentObject.Translation.Y, player.AgentObject.Translation.Z,
-                   player.AgentObject.Forward.X, player.AgentObject.Forward.Y, player.AgentObject.Forward.Z));
+                   player.AgentObject.Forward.X, player.AgentObject.Forward.Y, player.AgentObject.Forward.Z, player.TreasureCount));
                 inspector.setInfo(12,
-                   string.Format("npAgent:  Location ({0,5:f0},{1,3:f0},{2,5:f0})  Looking at ({3,5:f2},{4,5:f2},{5,5:f2})",
+                   string.Format("npAgent:  Location ({0,5:f0},{1,3:f0},{2,5:f0})  Looking at ({3,5:f2},{4,5:f2},{5,5:f2})  Treasure Count = {6:d}",
                    npAgent.AgentObject.Translation.X, npAgent.AgentObject.Translation.Y, npAgent.AgentObject.Translation.Z,
-                   npAgent.AgentObject.Forward.X, npAgent.AgentObject.Forward.Y, npAgent.AgentObject.Forward.Z));
+                   npAgent.AgentObject.Forward.X, npAgent.AgentObject.Forward.Y, npAgent.AgentObject.Forward.Z, npAgent.TreasureCount));
                 inspector.setMatrices("player", "npAgent", player.AgentObject.Orientation, npAgent.AgentObject.Orientation);
             }
             // Process user keyboard events that relate to the render state of the the stage
@@ -530,7 +530,6 @@ namespace AGMGSK {
                 inspector.ShowHelp = false;
             }
             else if (keyboardState.IsKeyDown(Keys.N) && !oldKeyboardState.IsKeyDown(Keys.N))
-
                 npAgent.FindNearest(treasure);
             // toggle update speed between FixedStep and ! FixedStep
             else if (keyboardState.IsKeyDown(Keys.T) && !oldKeyboardState.IsKeyDown(Keys.T))
@@ -542,6 +541,8 @@ namespace AGMGSK {
             oldKeyboardState = keyboardState;    // Update saved state.
             base.Update(gameTime);  // update all GameComponents and DrawableGameComponents
             currentCamera.updateViewMatrix();
+            treasure.CheckForCollision(player);
+            treasure.CheckForCollision(npAgent);
         }
 
         /// <summary>
